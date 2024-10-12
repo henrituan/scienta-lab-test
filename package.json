@@ -4,6 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
+    "test": "vitest",
+    "test:watch": "vitest --watch",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
@@ -34,7 +36,8 @@
     "postcss": "^8",
     "prettier": "3.3.3",
     "tailwindcss": "^3.4.1",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^2.1.2"
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
