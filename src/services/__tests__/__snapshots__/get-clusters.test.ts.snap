@@ -1,0 +1,78 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`get-clusters > should match snapshot 1`] = `
+[
+  {
+    "avgAge": 74.73954504286607,
+    "clusterId": 4,
+    "femalePercent": 21,
+    "malePercent": 79,
+    "symptoms": [
+      "Antibiotics",
+      "Hair loss on other parts of the body",
+      "Small, raised bumps",
+      "Premature whitening or graying of hair",
+      "Minoxidil",
+      "Psoriasis",
+      "Swollen and stiff joints",
+      "Depigmentation (for widespread vitiligo)",
+      "Scalp sensitivity or itching",
+      "Dry, cracked skin that may bleed",
+    ],
+  },
+  {
+    "avgAge": 74.18689944450973,
+    "clusterId": 5,
+    "femalePercent": 82,
+    "malePercent": 18,
+    "symptoms": [
+      "Leaking, foul-smelling abscesses",
+      "JAK inhibitors",
+      "Platelet-rich plasma therapy",
+      "Vitamin D analogues",
+      "Atopic Dermatitis (Eczema)",
+      "Biologics (e.g., TNF-alpha inhibitors)",
+      "Patchy loss of skin color",
+      "Hormone therapy",
+      "Thickened, pitted  or ridged nails",
+      "Swollen and stiff joints",
+    ],
+  },
+  {
+    "avgAge": 42.34856316329995,
+    "clusterId": 6,
+    "femalePercent": 57,
+    "malePercent": 43,
+    "symptoms": [
+      "Skin grafting",
+      "Phototherapy",
+      "Small, raised bumps",
+      "Vitamin D analogues",
+      "Thickened, pitted or ridged nails",
+      "Raw, sensitive, swollen skin from scratching",
+      "Red, scaly patches on skin",
+      "Hair loss on other parts of the body",
+      "Topical corticosteroids",
+      "Atopic Dermatitis (Eczema)",
+    ],
+  },
+  {
+    "avgAge": 36.19179340285662,
+    "clusterId": 7,
+    "femalePercent": 88,
+    "malePercent": 12,
+    "symptoms": [
+      "Dupilumab (biologic)",
+      "Retinoids",
+      "Skin grafting",
+      "Topical calcineurin inhibitors",
+      "JAK inhibitors",
+      "Patchy loss of skin color",
+      "Scalp sensitivity or itching",
+      "Atopic Dermatitis (Eczema)",
+      "Premature whitening or graying of hair",
+      "Small, raised bumps",
+    ],
+  },
+]
+`;

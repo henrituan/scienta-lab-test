@@ -1,0 +1,38 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`get-patient > should match snapshot 1`] = `
+[
+  {
+    "clusterId": 13,
+    "coordinates": {
+      "x": -7.165522128346392,
+      "y": 6.777079232384578,
+    },
+    "patientId": 60,
+  },
+  {
+    "clusterId": 8,
+    "coordinates": {
+      "x": -9.385521730688493,
+      "y": 5.825364355168432,
+    },
+    "patientId": 61,
+  },
+  {
+    "clusterId": 17,
+    "coordinates": {
+      "x": -10.339938290911057,
+      "y": 3.342519830062648,
+    },
+    "patientId": 62,
+  },
+  {
+    "clusterId": 13,
+    "coordinates": {
+      "x": -5.911541191020675,
+      "y": 8.786440172113451,
+    },
+    "patientId": 63,
+  },
+]
+`;
