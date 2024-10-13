@@ -9,6 +9,7 @@ import { localPoint } from '@visx/event';
 import type { TransformMatrix } from '@visx/zoom/lib/types';
 
 import { patientClusterStore } from '@/stores/patientClusterStore';
+
 import { GraphControls } from './GraphControls';
 
 const WIDTH = 800;
@@ -98,48 +99,7 @@ export const PatientClusterGraph = observer(() => {
                   );
                 })}
               </Group>
-
-              {/* {showMiniMap && (
-                  <g
-                    clipPath="url(#zoom-clip)"
-                    transform={`
-                      scale(0.25)
-                      translate(${width * 4 - width - 60}, ${height * 4 - height - 60})
-                    `}
-                  >
-                    <rect width={width} height={height} fill="#1a1a1a" />
-                    {phyllotaxis.map(({ x, y }, i) => (
-                      <React.Fragment key={`dot-sm-${i}`}>
-                        <circle
-                          cx={x}
-                          cy={y}
-                          r={i > 500 ? sizeScale(1000 - i) : sizeScale(i)}
-                          fill={interpolateRainbow(colorScale(i) ?? 0)}
-                        />
-                      </React.Fragment>
-                    ))}
-                    <rect
-                      width={width}
-                      height={height}
-                      fill="white"
-                      fillOpacity={0.2}
-                      stroke="white"
-                      strokeWidth={4}
-                      transform={zoom.toStringInvert()}
-                    />
-                  </g>
-                )} */}
             </svg>
-
-            {/* <div className="mini-map">
-                <button
-                  type="button"
-                  className="btn btn-lg"
-                  onClick={() => setShowMiniMap(!showMiniMap)}
-                >
-                  {showMiniMap ? 'Hide' : 'Show'} Mini Map
-                </button>
-              </div> */}
           </div>
         );
       }}

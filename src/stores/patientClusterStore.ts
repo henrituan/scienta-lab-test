@@ -30,6 +30,14 @@ type PatientClusterStore = {
     clusters: Cluster[];
     selectedClusterId: number | null;
     selectedCluster: ClusterDetails | null;
+    filteredClusters: Cluster[];
+  };
+  filters: {
+    avgAge: number;
+    maxAvgAge: number;
+    femalePercent: number;
+    symptoms: string[];
+    allSymptoms: string[];
   };
   graph: {
     visiblePoints: Point[];
@@ -44,6 +52,9 @@ type PatientClusterStore = {
   setTransformMatrix: (transformMatrix: TransformMatrix) => void;
   setIsGraphLoading: (isLoading: boolean) => void;
   setSelectClusterId: (clusterId: number | null) => void;
+  setAvgAgeFilter: (avgAge: number) => void;
+  setFemalePercentFilter: (femalePercent: number) => void;
+  selectSymptomsFilter: (symptom: string) => void;
 };
 
 function createPatientClusterStore() {
@@ -54,9 +65,34 @@ function createPatientClusterStore() {
       isGraphLoading: true,
     },
 
+    filters: {
+      avgAge: 100,
+      femalePercent: 100,
+      symptoms: [],
+
+      get maxAvgAge() {
+        const {
+          data: { clusters },
+        } = store;
+
+        return Math.round(Math.max(...clusters.map((c) => c.avgAge)));
+      },
+
+      get allSymptoms() {
+        const {
+          data: { clusters },
+        } = store;
+
+        const symptoms = new Set<string>();
+        clusters.forEach((c) => c.symptoms.forEach((s) => symptoms.add(s)));
+        return Array.from(symptoms);
+      },
+    },
+
     data: {
       clusters: [],
       selectedClusterId: null,
+
       get selectedCluster() {
         const {
           data: { selectedClusterId, clusters },
@@ -74,6 +110,23 @@ function createPatientClusterStore() {
         const color = getColorForCluster(selectedClusterId);
 
         return { ...cluster, patientsCount, color };
+      },
+
+      get filteredClusters() {
+        const { clusters } = store.data;
+        const { avgAge, femalePercent, symptoms } = store.filters;
+
+        return clusters.filter((c) => {
+          if (c.avgAge > avgAge) return false;
+          if (c.femalePercent > femalePercent) return false;
+          if (
+            symptoms.length > 0 &&
+            !c.symptoms.some((s) => symptoms.includes(s))
+          )
+            return false;
+
+          return true;
+        });
       },
     },
 
@@ -121,32 +174,43 @@ function createPatientClusterStore() {
                 height: HEIGHT,
               });
 
+              // if outside the visible area, skip
               if (
-                x >= visibleArea.xMin &&
-                x <= visibleArea.xMax &&
-                y >= visibleArea.yMin &&
-                y <= visibleArea.yMax
+                x < visibleArea.xMin ||
+                x > visibleArea.xMax ||
+                y < visibleArea.yMin ||
+                y > visibleArea.yMax
               ) {
-                const point: Point = {
-                  id: p.patientId,
-                  clusterId: p.clusterId,
-                  x,
-                  y,
-                  color: getColorForCluster(p.clusterId),
-                };
-
-                // spatial downSample:
-                // only add the point to visiblePoints if it's not too close to any other point
-                if (
-                  !visiblePoints.some(
-                    (d) =>
-                      Math.abs(d.x - x) < scaledRadius &&
-                      Math.abs(d.y - y) < scaledRadius,
-                  )
-                ) {
-                  visiblePoints.push(point);
-                }
+                continue;
               }
+
+              const point: Point = {
+                id: p.patientId,
+                clusterId: p.clusterId,
+                x,
+                y,
+                color: getColorForCluster(p.clusterId),
+              };
+
+              // filter
+              const { filteredClusters } = store.data;
+              if (!filteredClusters.some((c) => c.clusterId === p.clusterId)) {
+                continue;
+              }
+
+              // spatial downSample:
+              // if it's not too close to any other point, skip
+              if (
+                visiblePoints.some(
+                  (d) =>
+                    Math.abs(d.x - x) < scaledRadius &&
+                    Math.abs(d.y - y) < scaledRadius,
+                )
+              ) {
+                continue;
+              }
+
+              visiblePoints.push(point);
             } while ((currentNode = currentNode.next ?? null));
           }
 
@@ -172,7 +236,20 @@ function createPatientClusterStore() {
       },
 
       get totalPointsCount() {
-        return store.graph.quadTree?.data().length ?? 0;
+        const {
+          data: { filteredClusters },
+          graph: { quadTree },
+        } = store;
+
+        if (!quadTree) return 0;
+
+        return (
+          quadTree
+            .data()
+            .filter((p) =>
+              filteredClusters.some((c) => c.clusterId === p.clusterId),
+            ).length ?? 0
+        );
       },
     },
 
@@ -199,6 +276,8 @@ function createPatientClusterStore() {
       store.ui.isGraphLoading = false;
       store.ui.isLoading = false;
       store.ui.isLoaded = true;
+      store.filters.avgAge = store.filters.maxAvgAge;
+      store.filters.symptoms = store.filters.allSymptoms;
     },
 
     dispose() {
@@ -220,6 +299,24 @@ function createPatientClusterStore() {
 
     setSelectClusterId(clusterId) {
       store.data.selectedClusterId = clusterId;
+    },
+
+    setAvgAgeFilter(avgAge) {
+      store.filters.avgAge = avgAge;
+    },
+
+    setFemalePercentFilter(femalePercent) {
+      store.filters.femalePercent = femalePercent;
+    },
+
+    selectSymptomsFilter(symptom) {
+      const { symptoms } = store.filters;
+      const index = symptoms.indexOf(symptom);
+      if (index === -1) {
+        store.filters.symptoms.push(symptom);
+      } else {
+        store.filters.symptoms.splice(index, 1);
+      }
     },
   };
 

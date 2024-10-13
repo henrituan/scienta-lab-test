@@ -6,19 +6,19 @@ import { patientClusterStore } from '@/stores/patientClusterStore';
 
 import { Slider } from '@/ui/Slider/Slider';
 
-export const AgeFilter = observer(() => {
+export const FemalePercentFilter = observer(() => {
   const {
     ui: { isLoading },
-    filters: { avgAge, maxAvgAge },
-    setAvgAgeFilter,
+    filters: { femalePercent },
+    setFemalePercentFilter,
     setIsGraphLoading,
   } = patientClusterStore;
 
-  const [sliderValue, setSliderValue] = useState(avgAge);
+  const [sliderValue, setSliderValue] = useState(femalePercent);
 
   const onChange = (value: number) => {
-    const debouncedUpdate = debounce((avgAge: number) => {
-      setAvgAgeFilter(avgAge);
+    const debouncedUpdate = debounce((femalePercent: number) => {
+      setFemalePercentFilter(femalePercent);
       setIsGraphLoading(false);
     }, 500);
 
@@ -31,12 +31,12 @@ export const AgeFilter = observer(() => {
     <div className="flex gap-4">
       <Slider
         min={0}
-        max={maxAvgAge}
+        max={100}
         value={sliderValue}
         isDisabled={isLoading}
         onChange={onChange}
       />
-      <span>{avgAge}</span>
+      <span>{femalePercent}</span>
     </div>
   );
 });
