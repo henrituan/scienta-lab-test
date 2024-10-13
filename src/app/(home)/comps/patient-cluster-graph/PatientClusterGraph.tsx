@@ -31,10 +31,10 @@ export const PatientClusterGraph = observer(() => {
     <Zoom<SVGSVGElement>
       width={WIDTH}
       height={HEIGHT}
-      scaleXMin={1 / 4}
-      scaleXMax={8}
-      scaleYMin={1 / 4}
-      scaleYMax={8}
+      scaleXMin={1 / 10}
+      scaleXMax={10}
+      scaleYMin={1 / 10}
+      scaleYMax={10}
     >
       {(zoom) => {
         useEffect(() => {
@@ -93,7 +93,7 @@ export const PatientClusterGraph = observer(() => {
                 }}
                 onDoubleClick={(event) => {
                   const point = localPoint(event) || { x: 0, y: 0 };
-                  zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
+                  zoom.scale({ scaleX: 1.2, scaleY: 1.2, point });
                 }}
               />
               {/* {showMiniMap && (
