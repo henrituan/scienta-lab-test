@@ -19,6 +19,7 @@ export const PatientClusterGraph = observer(() => {
   const {
     graph: { visiblePoints },
     setTransformMatrix,
+    setIsGraphLoading,
   } = patientClusterStore;
 
   const handlePatientClick = (patient: Patient) => {
@@ -26,7 +27,7 @@ export const PatientClusterGraph = observer(() => {
   };
 
   return (
-    <div className="flex flex-col space-y-4">
+    <div className="flex flex-col gap-4">
       <div className="flex">
         <Zoom<SVGSVGElement>
           width={WIDTH}
@@ -40,7 +41,10 @@ export const PatientClusterGraph = observer(() => {
             useEffect(() => {
               const debouncedUpdate = debounce((matrix: TransformMatrix) => {
                 setTransformMatrix(matrix);
+                setIsGraphLoading(false);
               }, 500);
+
+              setIsGraphLoading(true);
               debouncedUpdate(zoom.transformMatrix);
               return () => debouncedUpdate.cancel();
             }, [zoom.transformMatrix]);

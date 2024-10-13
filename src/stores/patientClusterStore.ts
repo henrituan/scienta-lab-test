@@ -1,11 +1,11 @@
 import { makeAutoObservable } from 'mobx';
 import { quadtree, Quadtree, QuadtreeLeaf } from 'd3-quadtree';
+import type { TransformMatrix } from '@visx/zoom/lib/types';
 
-import { Cluster } from '@/types/cluster';
-import { Patient } from '@/types/patient';
+import type { Cluster } from '@/types/cluster';
+import type { Patient } from '@/types/patient';
 
 import { xScale, yScale, getColorForCluster, getDomains } from '@/stores/util';
-import { TransformMatrix } from '@visx/zoom/lib/types';
 
 const WIDTH = 800;
 const HEIGHT = 600;
@@ -21,23 +21,26 @@ type Point = {
 };
 
 type PatientClusterStore = {
-  data: {
-    patients: Patient[];
-    clusters: Cluster[];
-  };
   ui: {
     isLoading: boolean;
     isLoaded: boolean;
+    isGraphLoading: boolean;
+  };
+  data: {
+    clusters: Cluster[];
   };
   graph: {
     visiblePoints: Point[];
     domain: { x: number[]; y: number[] };
     quadTree: Quadtree<Patient> | null;
     transformMatrix: TransformMatrix | null;
+    visiblePointsCount: number;
+    totalPointsCount: number;
   };
   init: (initialData: { patients: Patient[]; clusters: Cluster[] }) => void;
   dispose: () => void;
   setTransformMatrix: (transformMatrix: TransformMatrix) => void;
+  setIsGraphLoading: (isLoading: boolean) => void;
 };
 
 function createPatientClusterStore() {
@@ -45,10 +48,10 @@ function createPatientClusterStore() {
     ui: {
       isLoading: true,
       isLoaded: false,
+      isGraphLoading: true,
     },
 
     data: {
-      patients: [],
       clusters: [],
     },
 
@@ -141,12 +144,18 @@ function createPatientClusterStore() {
 
         return visiblePoints;
       },
+
+      get visiblePointsCount() {
+        return store.graph.visiblePoints.length;
+      },
+
+      get totalPointsCount() {
+        return store.graph.quadTree?.data().length ?? 0;
+      },
     },
 
-    init(initialData) {
-      store.ui.isLoading = false;
-      store.ui.isLoaded = true;
-      store.data = initialData;
+    init({ patients, clusters }) {
+      store.data.clusters = clusters;
 
       store.graph.quadTree = quadtree<Patient>()
         .x((p) =>
@@ -163,13 +172,16 @@ function createPatientClusterStore() {
             height: HEIGHT,
           }),
         )
-        .addAll(store.data.patients);
+        .addAll(patients);
+
+      store.ui.isGraphLoading = false;
+      store.ui.isLoading = false;
+      store.ui.isLoaded = true;
     },
 
     dispose() {
       store.ui.isLoaded = false;
       store.ui.isLoading = true;
-      store.data.patients = [];
       store.data.clusters = [];
       store.graph.quadTree = null;
       store.graph.transformMatrix = null;
@@ -177,6 +189,10 @@ function createPatientClusterStore() {
 
     setTransformMatrix(transformMatrix) {
       store.graph.transformMatrix = transformMatrix;
+    },
+
+    setIsGraphLoading(isLoading) {
+      store.ui.isGraphLoading = isLoading;
     },
   };
 
