@@ -11,6 +11,7 @@ import type { TransformMatrix } from '@visx/zoom/lib/types';
 import type { Patient } from '@/types/patient';
 
 import { patientClusterStore } from '@/stores/patientClusterStore';
+import { GraphControls } from './GraphControls';
 
 const WIDTH = 800;
 const HEIGHT = 600;
@@ -27,76 +28,75 @@ export const PatientClusterGraph = observer(() => {
   };
 
   return (
-    <div className="flex flex-col gap-4">
-      <div className="flex">
-        <Zoom<SVGSVGElement>
-          width={WIDTH}
-          height={HEIGHT}
-          scaleXMin={1 / 2}
-          scaleXMax={4}
-          scaleYMin={1 / 2}
-          scaleYMax={4}
-        >
-          {(zoom) => {
-            useEffect(() => {
-              const debouncedUpdate = debounce((matrix: TransformMatrix) => {
-                setTransformMatrix(matrix);
-                setIsGraphLoading(false);
-              }, 500);
+    <Zoom<SVGSVGElement>
+      width={WIDTH}
+      height={HEIGHT}
+      scaleXMin={1 / 4}
+      scaleXMax={8}
+      scaleYMin={1 / 4}
+      scaleYMax={8}
+    >
+      {(zoom) => {
+        useEffect(() => {
+          const debouncedUpdate = debounce((matrix: TransformMatrix) => {
+            setTransformMatrix(matrix);
+            setIsGraphLoading(false);
+          }, 500);
 
-              setIsGraphLoading(true);
-              debouncedUpdate(zoom.transformMatrix);
-              return () => debouncedUpdate.cancel();
-            }, [zoom.transformMatrix]);
+          setIsGraphLoading(true);
+          debouncedUpdate(zoom.transformMatrix);
+          return () => debouncedUpdate.cancel();
+        }, [zoom.transformMatrix]);
 
-            return (
-              <div className="relative">
-                <svg
-                  width={WIDTH}
-                  height={HEIGHT}
-                  style={{
-                    cursor: zoom.isDragging ? 'grabbing' : 'grab',
-                    touchAction: 'none',
-                  }}
-                  ref={zoom.containerRef}
-                >
-                  <rect width={WIDTH} height={HEIGHT} rx={14} fill={'white'} />
+        return (
+          <div className="relative flex flex-col gap-4">
+            <GraphControls zoom={zoom} />
+            <svg
+              width={WIDTH}
+              height={HEIGHT}
+              style={{
+                cursor: zoom.isDragging ? 'grabbing' : 'grab',
+                touchAction: 'none',
+              }}
+              ref={zoom.containerRef}
+            >
+              <rect width={WIDTH} height={HEIGHT} rx={14} fill={'white'} />
 
-                  <Group transform={zoom.toString()}>
-                    {visiblePoints.map(({ id, x, y, color }) => (
-                      <Circle
-                        key={id}
-                        cx={x}
-                        cy={y}
-                        r={5 / zoom.transformMatrix.scaleX}
-                        fill={color}
-                        opacity={0.6}
-                        // onClick={() => handlePatien tClick(patient)}
-                        style={{ cursor: 'pointer' }}
-                      />
-                    ))}
-                  </Group>
-
-                  <rect
-                    width={WIDTH}
-                    height={HEIGHT}
-                    rx={14}
-                    fill="transparent"
-                    onTouchStart={zoom.dragStart}
-                    onTouchMove={zoom.dragMove}
-                    onTouchEnd={zoom.dragEnd}
-                    onMouseDown={zoom.dragStart}
-                    onMouseMove={zoom.dragMove}
-                    onMouseUp={zoom.dragEnd}
-                    onMouseLeave={() => {
-                      if (zoom.isDragging) zoom.dragEnd();
-                    }}
-                    onDoubleClick={(event) => {
-                      const point = localPoint(event) || { x: 0, y: 0 };
-                      zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
-                    }}
+              <Group transform={zoom.toString()}>
+                {visiblePoints.map(({ id, x, y, color }) => (
+                  <Circle
+                    key={id}
+                    cx={x}
+                    cy={y}
+                    r={5 / zoom.transformMatrix.scaleX}
+                    fill={color}
+                    opacity={0.6}
+                    // onClick={() => handlePatien tClick(patient)}
+                    style={{ cursor: 'pointer' }}
                   />
-                  {/* {showMiniMap && (
+                ))}
+              </Group>
+
+              <rect
+                width={WIDTH}
+                height={HEIGHT}
+                rx={14}
+                fill="transparent"
+                onTouchStart={zoom.dragStart}
+                onTouchMove={zoom.dragMove}
+                onTouchEnd={zoom.dragEnd}
+                onMouseDown={zoom.dragStart}
+                onMouseMove={zoom.dragMove}
+                onMouseUp={zoom.dragEnd}
+                onMouseLeave={() => {
+                  if (zoom.isDragging) zoom.dragEnd();
+                }}
+                onDoubleClick={(event) => {
+                  const point = localPoint(event) || { x: 0, y: 0 };
+                  zoom.scale({ scaleX: 1.1, scaleY: 1.1, point });
+                }}
+              />
+              {/* {showMiniMap && (
                   <g
                     clipPath="url(#zoom-clip)"
                     transform={`
@@ -126,46 +126,9 @@ export const PatientClusterGraph = observer(() => {
                     />
                   </g>
                 )} */}
-                </svg>
-                <div className="controls">
-                  <button
-                    type="button"
-                    className="btn btn-zoom"
-                    onClick={() => zoom.scale({ scaleX: 1.2, scaleY: 1.2 })}
-                  >
-                    +
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-zoom btn-bottom"
-                    onClick={() => zoom.scale({ scaleX: 0.8, scaleY: 0.8 })}
-                  >
-                    -
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-lg"
-                    onClick={zoom.center}
-                  >
-                    Center
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-lg"
-                    onClick={zoom.reset}
-                  >
-                    Reset
-                  </button>
-                  <button
-                    type="button"
-                    className="btn btn-lg"
-                    onClick={zoom.clear}
-                  >
-                    Clear
-                  </button>
-                </div>
+            </svg>
 
-                {/* <div className="mini-map">
+            {/* <div className="mini-map">
                 <button
                   type="button"
                   className="btn btn-lg"
@@ -174,11 +137,9 @@ export const PatientClusterGraph = observer(() => {
                   {showMiniMap ? 'Hide' : 'Show'} Mini Map
                 </button>
               </div> */}
-              </div>
-            );
-          }}
-        </Zoom>
-      </div>
-    </div>
+          </div>
+        );
+      }}
+    </Zoom>
   );
 });
