@@ -1,3 +1,33 @@
+import { scaleLinear } from '@visx/scale';
+
+export const getDomains = (points: { x: number; y: number }[]) => {
+  const xValues = points.map((point) => point.x);
+  const yValues = points.map((point) => point.y);
+
+  return {
+    x: [Math.min(...xValues), Math.max(...xValues)],
+    y: [Math.min(...yValues), Math.max(...yValues)],
+  };
+};
+
+export const xScale = (args: {
+  x: number;
+  domain: number[];
+  width: number;
+}) => {
+  const { x, domain, width } = args;
+  return scaleLinear({ domain, range: [0, width] })(x);
+};
+
+export const yScale = (args: {
+  y: number;
+  domain: number[];
+  height: number;
+}) => {
+  const { y, domain, height } = args;
+  return scaleLinear({ domain, range: [height, 0] })(y);
+};
+
 export const getColorForCluster = (clusterId: number) => {
   switch (clusterId) {
     case 0:
