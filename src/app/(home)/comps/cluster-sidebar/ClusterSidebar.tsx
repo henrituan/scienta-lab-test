@@ -26,13 +26,13 @@ const Content: React.FC<{ cluster: ClusterDetails }> = ({ cluster }) => {
 
   return (
     <div className="flex flex-col pt-28 justify-center gap-2">
-      <div className="flex gap-2 mb-2 items-center">
+      <p className="flex gap-2 mb-2 items-center">
         <span
           className="h-6 w-6 rounded-full drop-shadow-lg"
           style={{ backgroundColor: color }}
         ></span>
-        <h1 className="text-xl font-bold">Cluster {clusterId}</h1>
-      </div>
+        <span className="text-xl font-bold">Cluster {clusterId}</span>
+      </p>
       <p>
         Patients count: <span className="text-teal-500">{patientsCount}</span>
       </p>

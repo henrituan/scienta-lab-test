@@ -34,7 +34,7 @@ export const Container = observer(
     return (
       <div className="grid grid-cols-[1fr,20rem] gap-8">
         <div className="grid items-center grid-rows-[1rem,5rem,1fr,5rem] py-8 h-full justify-items-center gap-4">
-          <h1 className="text-xl font-bold">Patient cluster visualization</h1>
+          <p className="text-xl font-bold">Patient cluster visualization</p>
           <GraphInfo />
           <PatientClusterGraph />
           <AgeFilter />
