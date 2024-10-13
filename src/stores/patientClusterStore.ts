@@ -2,17 +2,17 @@ import { makeAutoObservable } from 'mobx';
 import { quadtree, Quadtree, QuadtreeLeaf } from 'd3-quadtree';
 import type { TransformMatrix } from '@visx/zoom/lib/types';
 
-import type { Cluster } from '@/types/cluster';
+import type { Cluster, ClusterDetails } from '@/types/cluster';
 import type { Patient } from '@/types/patient';
 
 import { xScale, yScale, getColorForCluster, getDomains } from '@/stores/util';
 
 const WIDTH = 800;
 const HEIGHT = 600;
-const DOWNSAMPLE_RADIUS = 15;
+const DOWNSAMPLE_RADIUS = 20;
 const MAX_VISIBLE_POINTS = 1000;
 
-type Point = {
+export type Point = {
   id: number;
   x: number;
   y: number;
@@ -28,6 +28,8 @@ type PatientClusterStore = {
   };
   data: {
     clusters: Cluster[];
+    selectedClusterId: number | null;
+    selectedCluster: ClusterDetails | null;
   };
   graph: {
     visiblePoints: Point[];
@@ -41,6 +43,7 @@ type PatientClusterStore = {
   dispose: () => void;
   setTransformMatrix: (transformMatrix: TransformMatrix) => void;
   setIsGraphLoading: (isLoading: boolean) => void;
+  setSelectClusterId: (clusterId: number | null) => void;
 };
 
 function createPatientClusterStore() {
@@ -53,6 +56,25 @@ function createPatientClusterStore() {
 
     data: {
       clusters: [],
+      selectedClusterId: null,
+      get selectedCluster() {
+        const {
+          data: { selectedClusterId, clusters },
+          graph: { quadTree },
+        } = store;
+
+        if (selectedClusterId === null || !quadTree) return null;
+
+        const cluster = clusters.find((c) => c.clusterId === selectedClusterId);
+        if (!cluster) return null;
+
+        const patientsCount = quadTree
+          .data()
+          .filter((p) => p.clusterId === selectedClusterId).length;
+        const color = getColorForCluster(selectedClusterId);
+
+        return { ...cluster, patientsCount, color };
+      },
     },
 
     graph: {
@@ -183,6 +205,7 @@ function createPatientClusterStore() {
       store.ui.isLoaded = false;
       store.ui.isLoading = true;
       store.data.clusters = [];
+      store.data.selectedClusterId = null;
       store.graph.quadTree = null;
       store.graph.transformMatrix = null;
     },
@@ -193,6 +216,10 @@ function createPatientClusterStore() {
 
     setIsGraphLoading(isLoading) {
       store.ui.isGraphLoading = isLoading;
+    },
+
+    setSelectClusterId(clusterId) {
+      store.data.selectedClusterId = clusterId;
     },
   };
 

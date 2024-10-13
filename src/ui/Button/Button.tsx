@@ -7,7 +7,7 @@ export const Button: React.FC<ComponentPropsWithRef<'button'>> = ({
   return (
     <button
       {...props}
-      className="bg-white rounded px-2 py-1 shadow text-sm text-black"
+      className="bg-white rounded px-2 py-1 drop-shadow-sm text-sm text-black"
     >
       {children}
     </button>

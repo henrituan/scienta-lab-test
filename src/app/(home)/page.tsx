@@ -1,7 +1,7 @@
 import { getPatients } from '@/services/get-patients';
 import { getClusters } from '@/services/get-clusters';
 
-import { Container } from './comps/container';
+import { Container } from './comps/Container';
 
 export default async function Home() {
   const [patients, clusters] = await Promise.all([
@@ -9,9 +9,5 @@ export default async function Home() {
     getClusters(),
   ]);
 
-  return (
-    <div className="grid items-center grid-rows-[1fr,5rem] h-full justify-items-center p-8 pb-20 gap-16">
-      <Container patients={patients} clusters={clusters} />
-    </div>
-  );
+  return <Container patients={patients} clusters={clusters} />;
 }

@@ -8,32 +8,28 @@ import { Zoom } from '@visx/zoom';
 import { localPoint } from '@visx/event';
 import type { TransformMatrix } from '@visx/zoom/lib/types';
 
-import type { Patient } from '@/types/patient';
-
 import { patientClusterStore } from '@/stores/patientClusterStore';
 import { GraphControls } from './GraphControls';
 
 const WIDTH = 800;
 const HEIGHT = 600;
+const POINT_RADIUS = 10;
 
 export const PatientClusterGraph = observer(() => {
   const {
     graph: { visiblePoints },
     setTransformMatrix,
     setIsGraphLoading,
+    setSelectClusterId,
   } = patientClusterStore;
-
-  const handlePatientClick = (patient: Patient) => {
-    console.log('Patient clicked:', patient);
-  };
 
   return (
     <Zoom<SVGSVGElement>
       width={WIDTH}
       height={HEIGHT}
-      scaleXMin={1 / 10}
+      scaleXMin={1 / 2}
       scaleXMax={10}
-      scaleYMin={1 / 10}
+      scaleYMin={1 / 2}
       scaleYMax={10}
     >
       {(zoom) => {
@@ -49,7 +45,7 @@ export const PatientClusterGraph = observer(() => {
         }, [zoom.transformMatrix]);
 
         return (
-          <div className="relative flex flex-col gap-4">
+          <div className="relative flex flex-col gap-4 drop-shadow-lg">
             <GraphControls zoom={zoom} />
             <svg
               width={WIDTH}
@@ -61,22 +57,6 @@ export const PatientClusterGraph = observer(() => {
               ref={zoom.containerRef}
             >
               <rect width={WIDTH} height={HEIGHT} rx={14} fill={'white'} />
-
-              <Group transform={zoom.toString()}>
-                {visiblePoints.map(({ id, x, y, color }) => (
-                  <Circle
-                    key={id}
-                    cx={x}
-                    cy={y}
-                    r={5 / zoom.transformMatrix.scaleX}
-                    fill={color}
-                    opacity={0.6}
-                    // onClick={() => handlePatien tClick(patient)}
-                    style={{ cursor: 'pointer' }}
-                  />
-                ))}
-              </Group>
-
               <rect
                 width={WIDTH}
                 height={HEIGHT}
@@ -92,10 +72,33 @@ export const PatientClusterGraph = observer(() => {
                   if (zoom.isDragging) zoom.dragEnd();
                 }}
                 onDoubleClick={(event) => {
+                  event.stopPropagation();
                   const point = localPoint(event) || { x: 0, y: 0 };
                   zoom.scale({ scaleX: 1.2, scaleY: 1.2, point });
                 }}
               />
+
+              <Group transform={zoom.toString()}>
+                {visiblePoints.map((point) => {
+                  const { id, x, y, color, clusterId } = point;
+                  return (
+                    <Circle
+                      key={id}
+                      cx={x}
+                      cy={y}
+                      r={POINT_RADIUS / zoom.transformMatrix.scaleX}
+                      fill={color}
+                      opacity={0.6}
+                      style={{ cursor: 'pointer' }}
+                      onClick={(event) => {
+                        event.stopPropagation();
+                        setSelectClusterId(clusterId);
+                      }}
+                    />
+                  );
+                })}
+              </Group>
+
               {/* {showMiniMap && (
                   <g
                     clipPath="url(#zoom-clip)"

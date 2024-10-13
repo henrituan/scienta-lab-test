@@ -10,6 +10,7 @@ import { patientClusterStore } from '@/stores/patientClusterStore';
 import { AgeFilter } from './filters/AgeFilter';
 import { PatientClusterGraph } from './patient-cluster-graph/PatientClusterGraph';
 import { GraphInfo } from './grap-info/GraphInfo';
+import { ClusterSidebar } from './cluster-sidebar/ClusterSidebar';
 
 export const Container = observer(
   (props: { patients: Patient[]; clusters: Cluster[] }) => {
@@ -31,11 +32,14 @@ export const Container = observer(
     if (!isLoading && !isLoaded) return 'Dataset not found';
 
     return (
-      <div className="grid items-center grid-rows-[.5rem,5rem,1fr,5rem] h-full justify-items-center p-8 pb-20 gap-8">
-        <h1 className="text-xl font-bold">Patient cluster visualization</h1>
-        <GraphInfo />
-        <PatientClusterGraph />
-        <AgeFilter />
+      <div className="grid grid-cols-[1fr,20rem] gap-8">
+        <div className="grid items-center grid-rows-[1rem,5rem,1fr,5rem] py-8 h-full justify-items-center gap-4">
+          <h1 className="text-xl font-bold">Patient cluster visualization</h1>
+          <GraphInfo />
+          <PatientClusterGraph />
+          <AgeFilter />
+        </div>
+        <ClusterSidebar />
       </div>
     );
   },

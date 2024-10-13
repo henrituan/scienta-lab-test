@@ -12,3 +12,8 @@ export type Cluster = {
   malePercent: number;
   symptoms: string[];
 };
+
+export type ClusterDetails = Cluster & {
+  patientsCount: number;
+  color: string;
+};
