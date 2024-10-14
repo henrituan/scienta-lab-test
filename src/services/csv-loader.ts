@@ -4,7 +4,15 @@ import { parse } from 'csv-parse';
 
 export const loadCSV = <T>(filename: string): Promise<T[]> => {
   return new Promise((resolve, reject) => {
-    const filePath = path.join(process.cwd(), 'public/data', filename);
+    let filePath = '';
+    if (process.env.VERCEL_ENV) {
+      // On Vercel
+      filePath = path.join(process.cwd(), filename);
+    } else {
+      // On local
+      filePath = path.join(process.cwd(), 'public/data', filename);
+    }
+
     const fileContent = fs.readFileSync(filePath, { encoding: 'utf-8' });
 
     parse(
