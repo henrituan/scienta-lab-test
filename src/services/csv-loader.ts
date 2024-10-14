@@ -1,19 +1,11 @@
-import fs from 'fs';
-import path from 'path';
 import { parse } from 'csv-parse';
+
+import { paitentsCsv } from './data/patients.csv';
+import { clustersCsv } from './data/clusters.csv';
 
 export const loadCSV = <T>(filename: string): Promise<T[]> => {
   return new Promise((resolve, reject) => {
-    let filePath = '';
-    if (process.env.VERCEL_ENV) {
-      // On Vercel
-      filePath = path.join(process.cwd(), 'data', filename);
-    } else {
-      // On local
-      filePath = path.join(process.cwd(), 'public/data', filename);
-    }
-
-    const fileContent = fs.readFileSync(filePath, { encoding: 'utf-8' });
+    const fileContent = filename === 'patients.csv' ? paitentsCsv : clustersCsv;
 
     parse(
       fileContent,
