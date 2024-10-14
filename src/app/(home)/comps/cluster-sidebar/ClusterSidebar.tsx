@@ -68,7 +68,7 @@ export const ClusterSidebar = observer(() => {
   } = patientClusterStore;
 
   return (
-    <div className="bg-slate-50 drop-shadow-lg h-[100vh] p-4 text-black">
+    <div className="bg-slate-50 drop-shadow-lg h-full p-4 text-black">
       {selectedCluster ? <Content cluster={selectedCluster} /> : <Empty />}
     </div>
   );

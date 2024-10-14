@@ -12,7 +12,7 @@ import { patientClusterStore } from '@/stores/patientClusterStore';
 
 import { GraphControls } from './GraphControls';
 
-const WIDTH = 800;
+const WIDTH = 1000;
 const HEIGHT = 600;
 const POINT_RADIUS = 10;
 

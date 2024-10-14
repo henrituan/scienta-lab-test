@@ -1,5 +1,6 @@
 import { AgeFilter } from './AgeFilter';
 import { FemalePercentFilter } from './FemalePercentFilter';
+import { SymptomFilter } from './SymptompFilter';
 
 export const Filters = () => {
   return (
@@ -11,6 +12,10 @@ export const Filters = () => {
       <div className="grid grid-cols-[8rem,10rem]">
         <span>Female %</span>
         <FemalePercentFilter />
+      </div>
+      <div className="grid grid-cols-[8rem,1fr]">
+        <span>Symptoms</span>
+        <SymptomFilter />
       </div>
     </div>
   );

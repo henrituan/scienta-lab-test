@@ -7,7 +7,7 @@ import type { Patient } from '@/types/patient';
 
 import { xScale, yScale, getColorForCluster, getDomains } from '@/stores/util';
 
-const WIDTH = 800;
+const WIDTH = 1000;
 const HEIGHT = 600;
 const DOWNSAMPLE_RADIUS = 20;
 const MAX_VISIBLE_POINTS = 1000;
@@ -119,11 +119,7 @@ function createPatientClusterStore() {
         return clusters.filter((c) => {
           if (c.avgAge > avgAge) return false;
           if (c.femalePercent > femalePercent) return false;
-          if (
-            symptoms.length > 0 &&
-            !c.symptoms.some((s) => symptoms.includes(s))
-          )
-            return false;
+          if (!c.symptoms.every((s) => symptoms.includes(s))) return false;
 
           return true;
         });

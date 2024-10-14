@@ -32,16 +32,16 @@ export const Container = observer(
     if (!isLoading && !isLoaded) return 'Dataset not found';
 
     return (
-      <div className="grid grid-cols-[1fr,20rem] gap-8">
-        <div className="grid grid-rows-[1rem,5rem,1fr,5rem] py-8 h-full justify-center items-start gap-4">
-          <p className="text-2xl font-bold text-center">
-            Patient cluster visualization
-          </p>
-          <GraphInfo />
+      <div className="grid grid-rows-[1rem,4rem,1fr] py-8 pl-8 h-full justify-center items-start gap-4">
+        <p className="text-2xl font-bold text-center">
+          Patient cluster visualization
+        </p>
+        <GraphInfo />
+        <div className="grid grid-cols-[1fr,20rem] gap-8">
           <PatientClusterGraph />
-          <Filters />
+          <ClusterSidebar />
         </div>
-        <ClusterSidebar />
+        <Filters />
       </div>
     );
   },
