@@ -7,7 +7,7 @@ export const loadCSV = <T>(filename: string): Promise<T[]> => {
     let filePath = '';
     if (process.env.VERCEL_ENV) {
       // On Vercel
-      filePath = path.join(process.cwd(), filename);
+      filePath = path.join(process.cwd(), 'data', filename);
     } else {
       // On local
       filePath = path.join(process.cwd(), 'public/data', filename);
