@@ -23,7 +23,7 @@ export const SymptomFilter = observer(() => {
           label={symptom}
           isChecked={symptoms.includes(symptom)}
           isDisabled={isLoading}
-          onChange={(e) => onChange(symptom)}
+          onChange={() => onChange(symptom)}
         />
       ))}
     </div>
