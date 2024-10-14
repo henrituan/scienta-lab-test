@@ -54,7 +54,7 @@ type PatientClusterStore = {
   setSelectClusterId: (clusterId: number | null) => void;
   setAvgAgeFilter: (avgAge: number) => void;
   setFemalePercentFilter: (femalePercent: number) => void;
-  selectSymptomsFilter: (symptom: string) => void;
+  setSelectedSymptomsFilter: (symptoms: string[]) => void;
 };
 
 function createPatientClusterStore() {
@@ -305,14 +305,8 @@ function createPatientClusterStore() {
       store.filters.femalePercent = femalePercent;
     },
 
-    selectSymptomsFilter(symptom) {
-      const { symptoms } = store.filters;
-      const index = symptoms.indexOf(symptom);
-      if (index === -1) {
-        store.filters.symptoms.push(symptom);
-      } else {
-        store.filters.symptoms.splice(index, 1);
-      }
+    setSelectedSymptomsFilter(symptoms) {
+      store.filters.symptoms = symptoms;
     },
   };
 

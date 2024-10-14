@@ -21,7 +21,7 @@ export const Checkbox: React.FC<CheckboxProps> = ({
         disabled={isDisabled}
         onChange={(e) => onChange(e.target.checked)}
       />
-      <span className="text-sm">{label}</span>
+      <span className="text-sm leading-4">{label}</span>
     </label>
   );
 };
