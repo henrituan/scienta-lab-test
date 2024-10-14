@@ -7,7 +7,7 @@ import { patientClusterStore } from '@/stores/patientClusterStore';
 
 const Empty = () => {
   return (
-    <p className="flex flex-col justify-center h-full">
+    <p className="flex flex-col justify-center text-center h-full">
       Select a point to view cluster's details
     </p>
   );
@@ -25,7 +25,7 @@ const Content: React.FC<{ cluster: ClusterDetails }> = ({ cluster }) => {
   } = cluster;
 
   return (
-    <div className="flex flex-col pt-28 justify-center gap-2">
+    <div className="flex flex-col pt-4 justify-center gap-2">
       <p className="flex gap-2 mb-2 items-center">
         <span
           className="h-6 w-6 rounded-full drop-shadow-lg"
@@ -68,8 +68,10 @@ export const ClusterSidebar = observer(() => {
   } = patientClusterStore;
 
   return (
-    <div className="bg-slate-50 drop-shadow-lg h-full p-4 text-black">
-      {selectedCluster ? <Content cluster={selectedCluster} /> : <Empty />}
+    <div className="flex flex-col justify-end">
+      <div className=" h-[600px] bg-slate-50 drop-shadow-lg p-4 text-black rounded-lg">
+        {selectedCluster ? <Content cluster={selectedCluster} /> : <Empty />}
+      </div>
     </div>
   );
 });
