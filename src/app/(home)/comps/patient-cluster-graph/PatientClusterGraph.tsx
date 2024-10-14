@@ -46,7 +46,7 @@ export const PatientClusterGraph = observer(() => {
         }, [zoom.transformMatrix]);
 
         return (
-          <div className="relative flex flex-col gap-4 drop-shadow-lg">
+          <div className="relative flex flex-col gap-2 drop-shadow-lg">
             <GraphControls zoom={zoom} />
             <svg
               width={WIDTH}
