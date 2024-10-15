@@ -2,17 +2,19 @@ import { useState } from 'react';
 import debounce from 'lodash/debounce';
 import { observer } from 'mobx-react-lite';
 
-import { patientClusterStore } from '@/stores/patientClusterStore';
+import {
+  DEFAULT_MAX_VISIBLE_POINTS,
+  patientClusterStore,
+} from '@/stores/patientClusterStore';
 
 import { Slider } from '@/ui/Slider/Slider';
 import { cx } from 'class-variance-authority';
 
-const DEFAULT_MAX_VISIBLE_POINTS = 1000;
-
 export const MaxVisblePointsFilter = observer(() => {
   const {
-    ui: { isLoading },
+    ui: { isLoaded, isLoading },
     filters: { maxVisiblePoints },
+    graph: { totalPointsCount },
     setMaxVisiblePointsFilter,
     setIsGraphLoading,
   } = patientClusterStore;
@@ -34,20 +36,27 @@ export const MaxVisblePointsFilter = observer(() => {
     <div className="flex gap-4">
       <Slider
         min={0}
-        max={2000}
+        max={totalPointsCount}
         value={sliderValue}
-        isDisabled={isLoading}
+        isDisabled={!isLoaded || isLoading}
         onChange={onChange}
       />
-      <span
-        className={cx(
-          maxVisiblePoints <= DEFAULT_MAX_VISIBLE_POINTS * 1.1 &&
-            'text-green-500',
-          maxVisiblePoints > DEFAULT_MAX_VISIBLE_POINTS * 1.1 && 'text-red-500',
-        )}
-      >
-        {maxVisiblePoints}
-      </span>
+      {isLoaded ? (
+        <span
+          className={cx(
+            maxVisiblePoints <= DEFAULT_MAX_VISIBLE_POINTS * 2 &&
+              'text-green-500',
+            maxVisiblePoints > DEFAULT_MAX_VISIBLE_POINTS * 2 &&
+              maxVisiblePoints <= totalPointsCount / 2 &&
+              'text-yellow-500',
+            maxVisiblePoints > totalPointsCount / 2 && 'text-red-500',
+          )}
+        >
+          {maxVisiblePoints}
+        </span>
+      ) : (
+        <span>0</span>
+      )}
     </div>
   );
 });

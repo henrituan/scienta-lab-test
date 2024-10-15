@@ -8,14 +8,15 @@ import { Zoom } from '@visx/zoom';
 import { localPoint } from '@visx/event';
 import type { TransformMatrix } from '@visx/zoom/lib/types';
 
-import { patientClusterStore } from '@/stores/patientClusterStore';
+import {
+  HEIGHT,
+  patientClusterStore,
+  POINT_RADIUS,
+  WIDTH,
+} from '@/stores/patientClusterStore';
 
 import { Spinner } from '@/ui/Spinner/Spinner';
 import { GraphControls } from './GraphControls';
-
-const WIDTH = 1000;
-const HEIGHT = 600;
-const POINT_RADIUS = 10;
 
 export const PatientClusterGraph = observer(() => {
   const {
@@ -93,7 +94,7 @@ export const PatientClusterGraph = observer(() => {
                       key={id}
                       cx={x}
                       cy={y}
-                      r={POINT_RADIUS / zoom.transformMatrix.scaleX}
+                      r={POINT_RADIUS / 2 / zoom.transformMatrix.scaleX}
                       fill={color}
                       opacity={0.6}
                       style={{ cursor: 'pointer' }}

@@ -6,10 +6,10 @@ import type { Point, PatientClusterStore } from '@/stores/type';
 
 import { xScale, yScale, getColorForCluster, getDomains } from '@/stores/util';
 
-const WIDTH = 1000;
-const HEIGHT = 600;
-const DOWNSAMPLE_RADIUS = 20;
-const MAX_VISIBLE_POINTS = 1000;
+export const WIDTH = 1000;
+export const HEIGHT = 600;
+export const POINT_RADIUS = 12;
+export const DEFAULT_MAX_VISIBLE_POINTS = 5000;
 
 function createPatientClusterStore() {
   const store: PatientClusterStore = {
@@ -22,7 +22,7 @@ function createPatientClusterStore() {
     filters: {
       avgAge: 100,
       femalePercent: 100,
-      maxVisiblePoints: MAX_VISIBLE_POINTS,
+      maxVisiblePoints: DEFAULT_MAX_VISIBLE_POINTS,
       symptoms: [],
 
       get maxAvgAge() {
@@ -106,7 +106,7 @@ function createPatientClusterStore() {
           yMax: (HEIGHT - translateY) / scaleY,
         };
         const visiblePoints: Point[] = [];
-        const scaledRadius = DOWNSAMPLE_RADIUS / scaleX;
+        const scaledRadius = POINT_RADIUS / scaleX;
 
         // Visit each node in the quadtree and check if the point is in the visible area
         quadTree.visit((node, x1, y1, x2, y2) => {
@@ -174,8 +174,9 @@ function createPatientClusterStore() {
         });
 
         // size downSample: only show MAX_VISIBLE_POINTS points
-        if (visiblePoints.length > MAX_VISIBLE_POINTS) {
-          const step = Math.ceil(visiblePoints.length / MAX_VISIBLE_POINTS);
+        const { maxVisiblePoints } = store.filters;
+        if (visiblePoints.length > maxVisiblePoints) {
+          const step = Math.ceil(visiblePoints.length / maxVisiblePoints);
           return visiblePoints.filter((_, index) => index % step === 0);
         }
 
