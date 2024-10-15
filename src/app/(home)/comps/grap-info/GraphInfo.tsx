@@ -16,10 +16,9 @@ export const GraphInfo = observer(() => {
           <span className="text-green-500">
             {isGraphLoading || isLoading ? '...' : visiblePoints.length} points
           </span>{' '}
-          out of {isLoading ? '...' : totalPointsCount}.
-          <br />
-          Numbers of points are reduced for better performance. Zoom in to see
-          more points in each cluster.
+          out of {isLoading ? '...' : totalPointsCount}. Numbers of points are
+          reduced for better performance. Zoom in to see more points in each
+          cluster.
         </p>
       </div>
     </div>

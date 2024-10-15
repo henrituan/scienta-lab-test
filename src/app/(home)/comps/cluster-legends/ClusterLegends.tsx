@@ -28,7 +28,7 @@ export const ClusterLegends = observer(() => {
           onClick={() => setSelectClusterId(clusterId)}
         >
           <span
-            className="h-6 w-6 rounded-full drop-shadow-lg"
+            className="h-4 w-4 rounded-full drop-shadow-lg"
             style={{ backgroundColor: getColorForCluster(clusterId) }}
           ></span>
           <span className="text-sm">

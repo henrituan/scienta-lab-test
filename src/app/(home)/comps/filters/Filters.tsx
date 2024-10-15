@@ -5,7 +5,7 @@ import { SymptomFilter } from './SymptomFilter';
 
 export const Filters = () => {
   return (
-    <div className="grid grid-cols-2 grid-rows-2 gap-4 max-w-[50vw]">
+    <div className="grid grid-cols-2 grid-rows-2 gap-4">
       <div className="grid grid-cols-[8rem,10rem] items-center">
         <span>Age</span>
         <AgeFilter />
