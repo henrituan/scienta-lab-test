@@ -1,9 +1,8 @@
 import { makeAutoObservable } from 'mobx';
-import { quadtree, Quadtree, QuadtreeLeaf } from 'd3-quadtree';
-import type { TransformMatrix } from '@visx/zoom/lib/types';
+import { quadtree, QuadtreeLeaf } from 'd3-quadtree';
 
-import type { Cluster, ClusterDetails } from '@/types/cluster';
 import type { Patient } from '@/types/patient';
+import type { Point, PatientClusterStore } from '@/stores/type';
 
 import { xScale, yScale, getColorForCluster, getDomains } from '@/stores/util';
 
@@ -11,51 +10,6 @@ const WIDTH = 1000;
 const HEIGHT = 600;
 const DOWNSAMPLE_RADIUS = 20;
 const MAX_VISIBLE_POINTS = 1000;
-
-export type Point = {
-  id: number;
-  x: number;
-  y: number;
-  clusterId: number;
-  color: string;
-};
-
-type PatientClusterStore = {
-  ui: {
-    isLoading: boolean;
-    isLoaded: boolean;
-    isGraphLoading: boolean;
-  };
-  data: {
-    clusters: Cluster[];
-    selectedClusterId: number | null;
-    selectedCluster: ClusterDetails | null;
-    filteredClusters: Cluster[];
-  };
-  filters: {
-    avgAge: number;
-    maxAvgAge: number;
-    femalePercent: number;
-    symptoms: string[];
-    allSymptoms: string[];
-  };
-  graph: {
-    visiblePoints: Point[];
-    domain: { x: number[]; y: number[] };
-    quadTree: Quadtree<Patient> | null;
-    transformMatrix: TransformMatrix | null;
-    visiblePointsCount: number;
-    totalPointsCount: number;
-  };
-  init: (initialData: { patients: Patient[]; clusters: Cluster[] }) => void;
-  dispose: () => void;
-  setTransformMatrix: (transformMatrix: TransformMatrix) => void;
-  setIsGraphLoading: (isLoading: boolean) => void;
-  setSelectClusterId: (clusterId: number | null) => void;
-  setAvgAgeFilter: (avgAge: number) => void;
-  setFemalePercentFilter: (femalePercent: number) => void;
-  setSelectedSymptomsFilter: (symptoms: string[]) => void;
-};
 
 function createPatientClusterStore() {
   const store: PatientClusterStore = {
@@ -68,6 +22,7 @@ function createPatientClusterStore() {
     filters: {
       avgAge: 100,
       femalePercent: 100,
+      maxVisiblePoints: MAX_VISIBLE_POINTS,
       symptoms: [],
 
       get maxAvgAge() {
@@ -307,6 +262,10 @@ function createPatientClusterStore() {
 
     setSelectedSymptomsFilter(symptoms) {
       store.filters.symptoms = symptoms;
+    },
+
+    setMaxVisiblePointsFilter(maxVisiblePoints) {
+      store.filters.maxVisiblePoints = maxVisiblePoints;
     },
   };
 
