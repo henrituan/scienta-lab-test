@@ -41,7 +41,7 @@ export const getColorForCluster = (clusterId: number) => {
     case 4:
       return '#FF00FF';
     case 5:
-      return '#00FFFF';
+      return '#211414';
     case 6:
       return '#800000';
     case 7:
@@ -63,7 +63,7 @@ export const getColorForCluster = (clusterId: number) => {
     case 15:
       return '#993366';
     case 16:
-      return '#FFFFCC';
+      return '#240518';
     case 17:
       return '#CCFFFF';
     case 18:
@@ -77,9 +77,9 @@ export const getColorForCluster = (clusterId: number) => {
     case 22:
       return '#C8D300';
     case 23:
-      return '#FF00FF';
+      return '#7f55cf';
     case 24:
-      return '#FFFF00';
+      return '#1d1f4f';
     case 25:
       return '#00FFFF';
     case 26:
