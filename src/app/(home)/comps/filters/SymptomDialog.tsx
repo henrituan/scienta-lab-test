@@ -1,33 +1,34 @@
 import React, { useState } from 'react';
 import { observer } from 'mobx-react-lite';
+import isEqual from 'lodash/isEqual';
+import sortBy from 'lodash/sortBy';
 
 import { Button } from '@/ui/Button/Button';
 import {
   Dialog,
-  DialogClose,
   DialogContent,
   DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from '@/ui/Dialog/Dialog';
 import { Checkbox } from '@/ui/Checkbox/Checkbox';
 
 import { patientClusterStore } from '@/stores/patientClusterStore';
 
 interface SymptomDialogProps {
+  isOpen: boolean;
   onApply: (symptoms: string[]) => void;
 }
 
 export const SymptomDialog: React.FC<SymptomDialogProps> = observer(
-  ({ onApply }) => {
+  ({ isOpen, onApply }) => {
     const {
       ui: { isLoaded, isGraphLoading },
-      filters: { symptoms, allSymptoms },
+      filters: { symptoms: currentSymptoms, allSymptoms },
     } = patientClusterStore;
 
-    const [selectedSymptoms, setSelectedSymptoms] = useState(symptoms);
+    const [selectedSymptoms, setSelectedSymptoms] = useState(currentSymptoms);
 
     const onCheckBoxChange = (symptom: string) => {
       const index = selectedSymptoms.indexOf(symptom);
@@ -42,13 +43,7 @@ export const SymptomDialog: React.FC<SymptomDialogProps> = observer(
     if (!isLoaded) return null;
 
     return (
-      <Dialog>
-        <DialogTrigger asChild>
-          <Button size="sm" variant="outline">
-            Edit
-          </Button>
-        </DialogTrigger>
-
+      <Dialog open={isOpen}>
         <DialogContent className="max-w-[60vw]">
           <DialogHeader>
             <DialogTitle>Select symptoms</DialogTitle>
@@ -70,11 +65,16 @@ export const SymptomDialog: React.FC<SymptomDialogProps> = observer(
           </div>
 
           <DialogFooter className="sm:justify-start">
-            <DialogClose asChild>
-              <Button type="button" onClick={() => onApply(selectedSymptoms)}>
-                Apply
-              </Button>
-            </DialogClose>
+            <Button
+              type="button"
+              onClick={() => onApply(selectedSymptoms)}
+              disabled={isEqual(
+                sortBy(selectedSymptoms),
+                sortBy(currentSymptoms),
+              )}
+            >
+              Apply
+            </Button>
           </DialogFooter>
         </DialogContent>
       </Dialog>

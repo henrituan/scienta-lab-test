@@ -10,6 +10,7 @@ import type { TransformMatrix } from '@visx/zoom/lib/types';
 
 import { patientClusterStore } from '@/stores/patientClusterStore';
 
+import { Spinner } from '@/ui/Spinner/Spinner';
 import { GraphControls } from './GraphControls';
 
 const WIDTH = 1000;
@@ -18,6 +19,7 @@ const POINT_RADIUS = 10;
 
 export const PatientClusterGraph = observer(() => {
   const {
+    ui: { isGraphLoading },
     graph: { visiblePoints },
     setTransformMatrix,
     setIsGraphLoading,
@@ -48,6 +50,10 @@ export const PatientClusterGraph = observer(() => {
         return (
           <div className="relative flex flex-col gap-2 drop-shadow-lg">
             <GraphControls zoom={zoom} />
+            <Spinner
+              isVisible={isGraphLoading}
+              className="absolute top-4 right-4"
+            />
             <svg
               width={WIDTH}
               height={HEIGHT}
@@ -57,7 +63,7 @@ export const PatientClusterGraph = observer(() => {
               }}
               ref={zoom.containerRef}
             >
-              <rect width={WIDTH} height={HEIGHT} rx={14} fill={'white'} />
+              <rect width={WIDTH} height={HEIGHT} rx={14} fill="#f8fafc" />
               <rect
                 width={WIDTH}
                 height={HEIGHT}
