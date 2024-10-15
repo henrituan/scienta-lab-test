@@ -11,6 +11,7 @@ import { PatientClusterGraph } from './patient-cluster-graph/PatientClusterGraph
 import { GraphInfo } from './grap-info/GraphInfo';
 import { ClusterSidebar } from './cluster-sidebar/ClusterSidebar';
 import { Filters } from './filters/Filters';
+import { ClusterLegends } from './cluster-legends/ClusterLegends';
 
 export const Container = observer(
   (props: { patients: Patient[]; clusters: Cluster[] }) => {
@@ -32,7 +33,7 @@ export const Container = observer(
     if (!isLoading && !isLoaded) return 'Dataset not found';
 
     return (
-      <div className="grid grid-rows-[1.5rem,6rem,1fr,1fr] py-8 px-8 h-full justify-center items-start gap-4 overflow-auto">
+      <div className="grid grid-rows-[1.5rem,6rem,1fr,1fr,1fr] py-8 px-8 h-full justify-center items-start gap-4 overflow-auto">
         <p className="text-2xl font-bold text-center">
           Patient cluster visualization
         </p>
@@ -42,6 +43,7 @@ export const Container = observer(
           <ClusterSidebar />
         </div>
         <GraphInfo />
+        <ClusterLegends />
       </div>
     );
   },
