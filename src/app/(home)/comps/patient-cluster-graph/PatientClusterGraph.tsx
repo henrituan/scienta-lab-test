@@ -9,9 +9,8 @@ import { localPoint } from '@visx/event';
 import type { TransformMatrix } from '@visx/zoom/lib/types';
 
 import {
-  HEIGHT,
   patientClusterStore,
-  POINT_RADIUS,
+  HEIGHT,
   WIDTH,
 } from '@/stores/patientClusterStore';
 
@@ -94,7 +93,7 @@ export const PatientClusterGraph = observer(() => {
                       key={id}
                       cx={x}
                       cy={y}
-                      r={POINT_RADIUS / 2 / zoom.transformMatrix.scaleX}
+                      r={8 / zoom.transformMatrix.scaleX}
                       fill={color}
                       opacity={0.6}
                       style={{ cursor: 'pointer' }}

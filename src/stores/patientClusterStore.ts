@@ -8,8 +8,8 @@ import { xScale, yScale, getColorForCluster, getDomains } from '@/stores/util';
 
 export const WIDTH = 1000;
 export const HEIGHT = 600;
-export const POINT_RADIUS = 12;
 export const DEFAULT_MAX_VISIBLE_POINTS = 5000;
+export const DEFAULT_PROXMITY_RADIUS = 12;
 
 function createPatientClusterStore() {
   const store: PatientClusterStore = {
@@ -23,6 +23,7 @@ function createPatientClusterStore() {
       avgAge: 100,
       femalePercent: 100,
       maxVisiblePoints: DEFAULT_MAX_VISIBLE_POINTS,
+      proximityRadius: DEFAULT_PROXMITY_RADIUS,
       symptoms: [],
 
       get maxAvgAge() {
@@ -106,7 +107,7 @@ function createPatientClusterStore() {
           yMax: (HEIGHT - translateY) / scaleY,
         };
         const visiblePoints: Point[] = [];
-        const scaledRadius = POINT_RADIUS / scaleX;
+        const scaledRadius = store.filters.proximityRadius / scaleX;
 
         // Visit each node in the quadtree and check if the point is in the visible area
         quadTree.visit((node, x1, y1, x2, y2) => {
@@ -267,6 +268,10 @@ function createPatientClusterStore() {
 
     setMaxVisiblePointsFilter(maxVisiblePoints) {
       store.filters.maxVisiblePoints = maxVisiblePoints;
+    },
+
+    setProximityRadiusFilter(proximityRadius) {
+      store.filters.proximityRadius = proximityRadius;
     },
   };
 

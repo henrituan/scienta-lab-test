@@ -31,6 +31,7 @@ export type PatientClusterStore = {
     symptoms: string[];
     allSymptoms: string[];
     maxVisiblePoints: number;
+    proximityRadius: number;
   };
   graph: {
     visiblePoints: Point[];
@@ -49,4 +50,5 @@ export type PatientClusterStore = {
   setFemalePercentFilter: (femalePercent: number) => void;
   setSelectedSymptomsFilter: (symptoms: string[]) => void;
   setMaxVisiblePointsFilter: (maxVisiblePoints: number) => void;
+  setProximityRadiusFilter: (proximityRadius: number) => void;
 };

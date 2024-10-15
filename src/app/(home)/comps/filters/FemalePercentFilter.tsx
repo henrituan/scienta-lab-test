@@ -28,7 +28,7 @@ export const FemalePercentFilter = observer(() => {
   };
 
   return (
-    <div className="flex gap-4">
+    <div className="flex gap-4 items-center">
       <Slider
         min={0}
         max={100}

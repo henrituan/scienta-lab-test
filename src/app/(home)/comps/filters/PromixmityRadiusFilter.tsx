@@ -4,26 +4,27 @@ import debounce from 'lodash/debounce';
 import { observer } from 'mobx-react-lite';
 
 import {
-  DEFAULT_MAX_VISIBLE_POINTS,
+  DEFAULT_PROXMITY_RADIUS,
   patientClusterStore,
 } from '@/stores/patientClusterStore';
 
 import { Slider } from '@/ui/Slider/Slider';
 
-export const MaxVisblePointsFilter = observer(() => {
+const MAX_PROXIMITY_RADIUS = 20;
+
+export const ProximityRadiusFilter = observer(() => {
   const {
     ui: { isLoaded, isLoading },
-    filters: { maxVisiblePoints },
-    graph: { totalPointsCount },
-    setMaxVisiblePointsFilter,
+    filters: { proximityRadius },
+    setProximityRadiusFilter,
     setIsGraphLoading,
   } = patientClusterStore;
 
-  const [sliderValue, setSliderValue] = useState(maxVisiblePoints);
+  const [sliderValue, setSliderValue] = useState(proximityRadius);
 
   const onChange = (value: number) => {
-    const debouncedUpdate = debounce((maxVisiblePoints: number) => {
-      setMaxVisiblePointsFilter(maxVisiblePoints);
+    const debouncedUpdate = debounce((proximityRadius: number) => {
+      setProximityRadiusFilter(proximityRadius);
       setIsGraphLoading(false);
     }, 500);
 
@@ -36,7 +37,7 @@ export const MaxVisblePointsFilter = observer(() => {
     <div className="flex gap-4 items-center">
       <Slider
         min={0}
-        max={totalPointsCount}
+        max={MAX_PROXIMITY_RADIUS}
         value={sliderValue}
         isDisabled={!isLoaded || isLoading}
         onChange={onChange}
@@ -44,15 +45,11 @@ export const MaxVisblePointsFilter = observer(() => {
       {isLoaded ? (
         <span
           className={cx(
-            maxVisiblePoints <= DEFAULT_MAX_VISIBLE_POINTS * 2 &&
-              'text-green-500',
-            maxVisiblePoints > DEFAULT_MAX_VISIBLE_POINTS * 2 &&
-              maxVisiblePoints <= totalPointsCount / 2 &&
-              'text-yellow-500',
-            maxVisiblePoints > totalPointsCount / 2 && 'text-red-500',
+            proximityRadius < DEFAULT_PROXMITY_RADIUS / 2 && 'text-red-500',
+            proximityRadius >= DEFAULT_PROXMITY_RADIUS / 2 && 'text-green-500',
           )}
         >
-          {maxVisiblePoints}
+          {proximityRadius}
         </span>
       ) : (
         <span>0</span>

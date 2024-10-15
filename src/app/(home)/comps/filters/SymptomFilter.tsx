@@ -32,7 +32,8 @@ export const SymptomFilter = observer(() => {
     <>
       <div className="flex items-center gap-2">
         <span>
-          <span className="text-green-500">{symptoms.length}</span> selected
+          <span className="text-green-500">{symptoms.length}</span> Symptoms
+          selected
         </span>
 
         <Button
