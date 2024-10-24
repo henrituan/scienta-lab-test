@@ -8,6 +8,24 @@ export const getDomains = (points: { x: number; y: number }[]) => {
     x: [Math.min(...xValues), Math.max(...xValues)],
     y: [Math.min(...yValues), Math.max(...yValues)],
   };
+  // let minX = Math.min(...xValues);
+  // let maxX = Math.max(...xValues);
+  // let minY = Math.min(...yValues);
+  // let maxY = Math.max(...yValues);
+
+  // if (minX < 0) {
+  //   minX = 0;
+  //   maxX = maxX + Math.abs(minX);
+  // }
+  // if (minY < 0) {
+  //   minY = 0;
+  //   maxY = maxY + Math.abs(minY);
+  // }
+
+  // return {
+  //   x: [minX, maxX],
+  //   y: [minY, maxY],
+  // };
 };
 
 export const xScale = (args: {
@@ -27,6 +45,48 @@ export const yScale = (args: {
   const { y, domain, height } = args;
   return scaleLinear({ domain, range: [height, 0] })(y);
 };
+
+// export const xScale = (args: {
+//   x: number;
+//   domain: number[];
+//   width: number;
+// }) => {
+//   const { x, domain, width } = args;
+
+//   // Find the minimum value in domain to handle negative values
+//   const minDomain = Math.min(...domain);
+
+//   // If there are negative values, shift the domain and input to positive
+//   const shift = minDomain < 0 ? Math.abs(minDomain) : 0;
+//   const shiftedDomain = domain.map((d) => d + shift);
+//   const shiftedX = x + shift;
+
+//   return scaleLinear({
+//     domain: shiftedDomain,
+//     range: [0, width],
+//   })(shiftedX);
+// };
+
+// export const yScale = (args: {
+//   y: number;
+//   domain: number[];
+//   height: number;
+// }) => {
+//   const { y, domain, height } = args;
+
+//   // Find the minimum value in domain to handle negative values
+//   const minDomain = Math.min(...domain);
+
+//   // If there are negative values, shift the domain and input to positive
+//   const shift = minDomain < 0 ? Math.abs(minDomain) : 0;
+//   const shiftedDomain = domain.map((d) => d + shift);
+//   const shiftedY = y + shift;
+
+//   return scaleLinear({
+//     domain: shiftedDomain,
+//     range: [height, 0],
+//   })(shiftedY);
+// };
 
 export const getColorForCluster = (clusterId: number) => {
   switch (clusterId) {
