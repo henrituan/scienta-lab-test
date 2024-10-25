@@ -12,16 +12,23 @@ import { PatientClusterGraph } from './patient-cluster-graph/PatientClusterGraph
 import { ClusterSidebar } from './cluster-sidebar/ClusterSidebar';
 import { Filters } from './filters/Filters';
 import { ClusterLegends } from './cluster-legends/ClusterLegends';
+import { DeckGlGraph } from './patient-cluster-graph/DeckGlGraph';
+import { deckGlStore } from '@/stores/deckGlStore';
 
 export const Container = observer(
   (props: { patients: Patient[]; clusters: Cluster[] }) => {
     const { patients, clusters } = props;
 
+    // const {
+    //   ui: { isLoaded, isLoading },
+    //   init,
+    //   dispose,
+    // } = patientClusterStore;
     const {
       ui: { isLoaded, isLoading },
       init,
       dispose,
-    } = patientClusterStore;
+    } = deckGlStore;
 
     useEffect(() => {
       init({ patients, clusters });
@@ -39,7 +46,9 @@ export const Container = observer(
         </p>
         <Filters />
         <div className="grid  grid-cols-[1000px_minmax(0,25rem)] w-full gap-8 justify-center">
-          <PatientClusterGraph />
+          {/* <PatientClusterGraph /> */}
+
+          <DeckGlGraph />
           <ClusterSidebar />
         </div>
         <ClusterLegends />
