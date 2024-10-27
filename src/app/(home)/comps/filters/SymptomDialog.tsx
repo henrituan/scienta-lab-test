@@ -14,7 +14,7 @@ import {
 } from '@/ui/Dialog/Dialog';
 import { Checkbox } from '@/ui/Checkbox/Checkbox';
 
-import { patientClusterStore } from '@/stores/patientClusterStore';
+import { deckGlStore } from '@/stores/deckGlStore';
 
 interface SymptomDialogProps {
   isOpen: boolean;
@@ -26,7 +26,7 @@ export const SymptomDialog: React.FC<SymptomDialogProps> = observer(
     const {
       ui: { isLoaded, isGraphLoading },
       filters: { symptoms: currentSymptoms, allSymptoms },
-    } = patientClusterStore;
+    } = deckGlStore;
 
     const [selectedSymptoms, setSelectedSymptoms] = useState(currentSymptoms);
 

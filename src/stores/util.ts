@@ -89,13 +89,32 @@ export const getColorForCluster = (clusterId: number) => {
   }
 };
 
-export const getClusterColorRGB = (
-  clusterId: number,
-): [number, number, number] => {
-  const hexColor = getColorForCluster(clusterId);
-  const r = parseInt(hexColor.substring(1, 3), 16);
-  const g = parseInt(hexColor.substring(3, 5), 16);
-  const b = parseInt(hexColor.substring(5, 7), 16);
-
-  return [r, g, b];
-};
+export const COLOR_RGB: [number, number, number][] = [
+  [255, 0, 0],
+  [0, 255, 0],
+  [0, 0, 255],
+  [195, 74, 44],
+  [255, 0, 255],
+  [33, 20, 20],
+  [128, 0, 0],
+  [0, 128, 0],
+  [0, 0, 128],
+  [128, 128, 0],
+  [128, 0, 128],
+  [0, 128, 128],
+  [192, 192, 192],
+  [128, 128, 128],
+  [153, 153, 255],
+  [153, 51, 102],
+  [36, 5, 24],
+  [204, 255, 255],
+  [102, 0, 102],
+  [255, 128, 128],
+  [0, 102, 204],
+  [204, 204, 255],
+  [200, 211, 0],
+  [127, 85, 207],
+  [29, 31, 79],
+  [0, 255, 255],
+  [255, 153, 204],
+];

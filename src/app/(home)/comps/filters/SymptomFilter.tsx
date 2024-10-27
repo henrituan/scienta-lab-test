@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { patientClusterStore } from '@/stores/patientClusterStore';
-import { SymptomDialog } from './SymptomDialog';
-import { useState } from 'react';
 import { Button } from '@/ui/Button/Button';
+import { SymptomDialog } from './SymptomDialog';
+
+import { deckGlStore } from '@/stores/deckGlStore';
 
 export const SymptomFilter = observer(() => {
   const {
@@ -11,7 +12,7 @@ export const SymptomFilter = observer(() => {
     filters: { symptoms },
     setIsGraphLoading,
     setSelectedSymptomsFilter,
-  } = patientClusterStore;
+  } = deckGlStore;
 
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 

@@ -3,14 +3,11 @@ import { useState } from 'react';
 import debounce from 'lodash/debounce';
 import { observer } from 'mobx-react-lite';
 
-import {
-  DEFAULT_PROXMITY_RADIUS,
-  patientClusterStore,
-} from '@/stores/patientClusterStore';
+import { DEFAULT_PROXMITY_RADIUS, deckGlStore } from '@/stores/deckGlStore';
 
 import { Slider } from '@/ui/Slider/Slider';
 
-const MAX_PROXIMITY_RADIUS = 20;
+const MAX_PROXIMITY_RADIUS = 10;
 
 export const ProximityRadiusFilter = observer(() => {
   const {
@@ -18,7 +15,7 @@ export const ProximityRadiusFilter = observer(() => {
     filters: { proximityRadius },
     setProximityRadiusFilter,
     setIsGraphLoading,
-  } = patientClusterStore;
+  } = deckGlStore;
 
   const [sliderValue, setSliderValue] = useState(proximityRadius);
 

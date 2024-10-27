@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 
-import { patientClusterStore } from '@/stores/patientClusterStore';
+import { deckGlStore } from '@/stores/deckGlStore';
 import { getColorForCluster } from '@/stores/util';
 
 export const ClusterLegends = observer(() => {
@@ -9,7 +9,7 @@ export const ClusterLegends = observer(() => {
     data: { clusters },
     graph: { quadTree },
     setSelectClusterId,
-  } = patientClusterStore;
+  } = deckGlStore;
 
   const getPatientsCount = (clusterId: number) => {
     return (

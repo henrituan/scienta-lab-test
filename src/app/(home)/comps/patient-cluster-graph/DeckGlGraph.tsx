@@ -1,5 +1,4 @@
 import React from 'react';
-import debounce from 'lodash/debounce';
 import { observer } from 'mobx-react-lite';
 import DeckGL from '@deck.gl/react';
 import { MapViewState } from 'deck.gl';
@@ -12,21 +11,14 @@ export const DeckGlGraph = observer(() => {
   const {
     ui: { isGraphLoading },
     graph: { scatterPlotLayer, viewState },
-    setIsGraphLoading,
     setViewState,
+    setIsGraphLoading,
   } = deckGlStore;
 
-  const debouncedUpdateViewState = debounce((newViewState) => {
+  const updateViewState = (newViewState: MapViewState) => {
     setViewState(newViewState);
     setIsGraphLoading(false);
-  }, 250);
-
-  const updateViewState = (newViewState: MapViewState) => {
-    setIsGraphLoading(true);
-    debouncedUpdateViewState(newViewState);
   };
-
-  if (!scatterPlotLayer) return null;
 
   return (
     <div className="relative w-[1000px] h-[600px] shadow-lg bg-slate-50 rounded">
@@ -36,7 +28,7 @@ export const DeckGlGraph = observer(() => {
           dragPan: true,
           dragRotate: true,
           scrollZoom: true,
-          doubleClickZoom: true,
+          doubleClickZoom: false,
           touchZoom: true,
           touchRotate: true,
           keyboard: true,

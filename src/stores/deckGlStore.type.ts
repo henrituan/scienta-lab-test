@@ -44,15 +44,13 @@ export type DeckGlStore = {
     };
     quadTree: Quadtree<Patient> | null;
     visiblePoints: Point[];
-    // domain: { x: number[]; y: number[] };
-    // transformMatrix: TransformMatrix | null;
+    filteredPoints: Point[];
     visiblePointsCount: number;
     totalPointsCount: number;
   };
   init: (initialData: { patients: Patient[]; clusters: Cluster[] }) => void;
   dispose: () => void;
   setViewState: (viewState: MapViewState) => void;
-  // setTransformMatrix: (transformMatrix: TransformMatrix) => void;
   setIsGraphLoading: (isLoading: boolean) => void;
   setSelectClusterId: (clusterId: number | null) => void;
   setAvgAgeFilter: (avgAge: number) => void;

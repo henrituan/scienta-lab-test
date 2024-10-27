@@ -2,7 +2,7 @@ import { useState } from 'react';
 import debounce from 'lodash/debounce';
 import { observer } from 'mobx-react-lite';
 
-import { patientClusterStore } from '@/stores/patientClusterStore';
+import { deckGlStore } from '@/stores/deckGlStore';
 
 import { Slider } from '@/ui/Slider/Slider';
 
@@ -12,7 +12,7 @@ export const FemalePercentFilter = observer(() => {
     filters: { femalePercent },
     setFemalePercentFilter,
     setIsGraphLoading,
-  } = patientClusterStore;
+  } = deckGlStore;
 
   const [sliderValue, setSliderValue] = useState(femalePercent);
 

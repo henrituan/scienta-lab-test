@@ -1,10 +1,10 @@
-import { makeAutoObservable } from 'mobx';
+import { action, makeAutoObservable } from 'mobx';
 import { quadtree, QuadtreeLeaf } from 'd3-quadtree';
 
 import type { Patient } from '@/types/patient';
 import type { Point, DeckGlStore } from '@/stores/deckGlStore.type';
 
-import { getColorForCluster, getClusterColorRGB } from '@/stores/util';
+import { getColorForCluster, COLOR_RGB } from '@/stores/util';
 import { MapViewState, ScatterplotLayer, WebMercatorViewport } from 'deck.gl';
 
 export const WIDTH = 1000;
@@ -20,7 +20,12 @@ const INITIAL_VIEW_STATE: MapViewState = {
   bearing: 0,
 };
 
-const getLayer = (points: Point[], scale: number) => {
+const getLayer = (args: {
+  points: Point[];
+  onPointClick: (index: number) => void;
+}) => {
+  const { points, onPointClick } = args;
+
   return new ScatterplotLayer<Point>({
     id: 'scatter-plot',
     data: points,
@@ -28,18 +33,16 @@ const getLayer = (points: Point[], scale: number) => {
     opacity: 0.8,
     stroked: false,
     filled: true,
-    radiusScale: 6,
-    radiusMinPixels: 3,
-    radiusMaxPixels: 20,
+    radiusMinPixels: 4,
+    radiusMaxPixels: 8,
     lineWidthMinPixels: 1,
     getPosition: (p) => [p.x, p.y],
-    // getRadius: () => 8 / scale,
-    getRadius: () => 8,
-    getFillColor: (p) => getClusterColorRGB(p.clusterId),
+    getFillColor: (p) => COLOR_RGB[p.clusterId],
     updateTriggers: {
       getFillColor: ['clusterId'],
       getPosition: ['x', 'y'],
     },
+    onClick: ({ index }) => onPointClick(index),
   });
 };
 
@@ -142,7 +145,7 @@ function createDeckGlStore() {
               const p = currentNode.data;
               const { x, y } = p.coordinates;
 
-              // todo: debug viewport x y
+              // todo: debug viewport x y0
 
               // if outside the visible area, skip
               // if (
@@ -201,13 +204,61 @@ function createDeckGlStore() {
         return visiblePoints;
       },
 
-      // todo: https://deck.gl/docs/developer-guide/performance#handle-incremental-data-loading
-      get scatterPlotLayer() {
-        const { visiblePoints } = store.graph;
-        // console.log('visiblePoints', visiblePoints.length);
-        if (!visiblePoints.length) return null;
+      get filteredPoints() {
+        const { quadTree } = store.graph;
+        if (!quadTree) return [];
 
-        return getLayer(visiblePoints, store.graph.viewPort.scale);
+        const { proximityRadius } = store.filters;
+        const scaledRadius = proximityRadius / 10;
+
+        const { filteredClusters } = store.data;
+        const filteredPoints: Point[] = [];
+
+        quadTree.visit((node) => {
+          if (!('length' in node)) {
+            let currentNode: QuadtreeLeaf<Patient> | null = node;
+            do {
+              const p = currentNode.data;
+              const { x, y } = p.coordinates;
+              const point: Point = {
+                id: p.patientId,
+                clusterId: p.clusterId,
+                x,
+                y,
+              };
+              if (!filteredClusters.some((c) => c.clusterId === p.clusterId)) {
+                continue;
+              }
+              // spatial downSample:
+              // if it's too close to any other point, skip
+              if (
+                filteredPoints.some(
+                  (d) =>
+                    Math.abs(d.x - x) < scaledRadius &&
+                    Math.abs(d.y - y) < scaledRadius,
+                )
+              ) {
+                continue;
+              }
+
+              filteredPoints.push(point);
+            } while ((currentNode = currentNode.next ?? null));
+          }
+        });
+
+        return filteredPoints;
+      },
+
+      get scatterPlotLayer() {
+        const { filteredPoints } = store.graph;
+        if (!filteredPoints.length) return null;
+
+        return getLayer({
+          points: filteredPoints,
+          onPointClick: action((index: number) => {
+            store.data.selectedClusterId = filteredPoints[index].clusterId;
+          }),
+        });
       },
 
       get visiblePointsCount() {
@@ -240,7 +291,6 @@ function createDeckGlStore() {
         .y((p) => p.coordinates.y)
         .addAll(patients);
 
-      store.ui.isGraphLoading = false;
       store.ui.isLoading = false;
       store.ui.isLoaded = true;
       store.filters.avgAge = store.filters.maxAvgAge;

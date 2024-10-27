@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import type { ClusterDetails } from '@/types/cluster';
 
-import { patientClusterStore } from '@/stores/patientClusterStore';
+import { deckGlStore } from '@/stores/deckGlStore';
 
 const Empty = () => {
   return (
@@ -65,7 +65,7 @@ const Content: React.FC<{ cluster: ClusterDetails }> = ({ cluster }) => {
 export const ClusterSidebar = observer(() => {
   const {
     data: { selectedCluster },
-  } = patientClusterStore;
+  } = deckGlStore;
 
   return (
     <div className="flex flex-col justify-end">
