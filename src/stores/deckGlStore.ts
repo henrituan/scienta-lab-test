@@ -1,24 +1,26 @@
 import { action, makeAutoObservable } from 'mobx';
 import { quadtree, QuadtreeLeaf } from 'd3-quadtree';
+import { MapViewState, ScatterplotLayer, WebMercatorViewport } from 'deck.gl';
 
 import type { Patient } from '@/types/patient';
 import type { Point, DeckGlStore } from '@/stores/deckGlStore.type';
 
 import { getColorForCluster, COLOR_RGB } from '@/stores/util';
-import { MapViewState, ScatterplotLayer, WebMercatorViewport } from 'deck.gl';
 
 export const WIDTH = 1000;
 export const HEIGHT = 600;
 export const DEFAULT_MAX_VISIBLE_POINTS = 5000;
 export const DEFAULT_PROXMITY_RADIUS = 2;
 
-const INITIAL_VIEW_STATE: MapViewState = {
+const DEFAULT_VIEW_STATE: MapViewState = {
   longitude: 0,
   latitude: 0,
   zoom: 4,
   pitch: 0,
   bearing: 0,
 };
+
+const ZOOM_STEP = 1 / 10;
 
 const getLayer = (args: {
   points: Point[];
@@ -119,7 +121,7 @@ function createDeckGlStore() {
 
     graph: {
       quadTree: null,
-      viewState: INITIAL_VIEW_STATE,
+      viewState: DEFAULT_VIEW_STATE,
 
       get viewPort() {
         const { viewState } = store.graph;
@@ -130,89 +132,14 @@ function createDeckGlStore() {
       },
 
       get visiblePoints() {
-        const { quadTree, viewPort } = store.graph;
-        if (!quadTree) return [];
-        if (!viewPort) return [];
-
-        const visiblePoints: Point[] = [];
-        const scaledRadius = store.filters.proximityRadius / viewPort.scale;
-
-        // Visit each node in the quadtree and check if the point is in the visible area
-        quadTree.visit((node, x1, y1, x2, y2) => {
-          if (!('length' in node)) {
-            let currentNode: QuadtreeLeaf<Patient> | null = node;
-            do {
-              const p = currentNode.data;
-              const { x, y } = p.coordinates;
-
-              // todo: debug viewport x y0
-
-              // if outside the visible area, skip
-              // if (
-              //   x < viewPort.minX ||
-              //   x > viewPort.maxX ||
-              //   y < viewPort.minY ||
-              //   y > viewPort.maxY
-              // ) {
-              //   continue;
-              // }
-
-              const point: Point = {
-                id: p.patientId,
-                clusterId: p.clusterId,
-                x,
-                y,
-              };
-
-              // filter
-              const { filteredClusters } = store.data;
-              if (!filteredClusters.some((c) => c.clusterId === p.clusterId)) {
-                continue;
-              }
-
-              // spatial downSample:
-              // if it's not too close to any other point, skip
-              if (
-                visiblePoints.some(
-                  (d) =>
-                    Math.abs(d.x - x) < scaledRadius &&
-                    Math.abs(d.y - y) < scaledRadius,
-                )
-              ) {
-                continue;
-              }
-
-              visiblePoints.push(point);
-            } while ((currentNode = currentNode.next ?? null));
-          }
-
-          return (
-            x1 >= viewPort.maxX ||
-            y1 >= viewPort.maxY ||
-            x2 < viewPort.minX ||
-            y2 < viewPort.minY
-          );
-        });
-
-        // size downSample: only show MAX_VISIBLE_POINTS points
-        const { maxVisiblePoints } = store.filters;
-        if (visiblePoints.length > maxVisiblePoints) {
-          const step = Math.ceil(visiblePoints.length / maxVisiblePoints);
-          return visiblePoints.filter((_, index) => index % step === 0);
-        }
-
-        return visiblePoints;
-      },
-
-      get filteredPoints() {
         const { quadTree } = store.graph;
         if (!quadTree) return [];
 
         const { proximityRadius } = store.filters;
-        const scaledRadius = proximityRadius / 10;
+        const scaledRadius = proximityRadius * ZOOM_STEP;
 
         const { filteredClusters } = store.data;
-        const filteredPoints: Point[] = [];
+        const visiblePoints: Point[] = [];
 
         quadTree.visit((node) => {
           if (!('length' in node)) {
@@ -232,7 +159,7 @@ function createDeckGlStore() {
               // spatial downSample:
               // if it's too close to any other point, skip
               if (
-                filteredPoints.some(
+                visiblePoints.some(
                   (d) =>
                     Math.abs(d.x - x) < scaledRadius &&
                     Math.abs(d.y - y) < scaledRadius,
@@ -241,22 +168,22 @@ function createDeckGlStore() {
                 continue;
               }
 
-              filteredPoints.push(point);
+              visiblePoints.push(point);
             } while ((currentNode = currentNode.next ?? null));
           }
         });
 
-        return filteredPoints;
+        return visiblePoints;
       },
 
       get scatterPlotLayer() {
-        const { filteredPoints } = store.graph;
-        if (!filteredPoints.length) return null;
+        const { visiblePoints } = store.graph;
+        if (!visiblePoints.length) return null;
 
         return getLayer({
-          points: filteredPoints,
+          points: visiblePoints,
           onPointClick: action((index: number) => {
-            store.data.selectedClusterId = filteredPoints[index].clusterId;
+            store.data.selectedClusterId = visiblePoints[index].clusterId;
           }),
         });
       },
@@ -303,6 +230,28 @@ function createDeckGlStore() {
       store.data.clusters = [];
       store.data.selectedClusterId = null;
       store.graph.quadTree = null;
+    },
+
+    zoomIn() {
+      const { viewState } = store.graph;
+      store.setViewState({ ...viewState, zoom: viewState.zoom + ZOOM_STEP });
+    },
+
+    zoomOut() {
+      const { viewState } = store.graph;
+      store.setViewState({ ...viewState, zoom: viewState.zoom - ZOOM_STEP });
+    },
+
+    zoomReset() {
+      store.setViewState(DEFAULT_VIEW_STATE);
+    },
+
+    centerGraph() {
+      store.setViewState({
+        ...store.graph.viewState,
+        longitude: DEFAULT_VIEW_STATE.longitude,
+        latitude: DEFAULT_VIEW_STATE.latitude,
+      });
     },
 
     setViewState(viewState) {

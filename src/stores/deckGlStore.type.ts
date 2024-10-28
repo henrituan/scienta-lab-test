@@ -44,12 +44,17 @@ export type DeckGlStore = {
     };
     quadTree: Quadtree<Patient> | null;
     visiblePoints: Point[];
-    filteredPoints: Point[];
     visiblePointsCount: number;
     totalPointsCount: number;
   };
   init: (initialData: { patients: Patient[]; clusters: Cluster[] }) => void;
   dispose: () => void;
+  // graph controls
+  zoomIn: () => void;
+  zoomOut: () => void;
+  zoomReset: () => void;
+  centerGraph: () => void;
+  // setters
   setViewState: (viewState: MapViewState) => void;
   setIsGraphLoading: (isLoading: boolean) => void;
   setSelectClusterId: (clusterId: number | null) => void;

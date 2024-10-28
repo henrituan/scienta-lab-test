@@ -15,7 +15,6 @@ import {
 } from '@/stores/patientClusterStore';
 
 import { Spinner } from '@/ui/Spinner/Spinner';
-import { GraphControls } from './GraphControls';
 
 export const PatientClusterGraph = observer(() => {
   const {
@@ -49,7 +48,6 @@ export const PatientClusterGraph = observer(() => {
 
         return (
           <div className="relative flex flex-col gap-2 drop-shadow-lg">
-            <GraphControls zoom={zoom} />
             <Spinner
               isVisible={isGraphLoading}
               className="absolute top-4 right-4"

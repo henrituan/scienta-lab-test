@@ -4,6 +4,7 @@ import DeckGL from '@deck.gl/react';
 import { MapViewState } from 'deck.gl';
 
 import { Spinner } from '@/ui/Spinner/Spinner';
+import { GraphControls } from './GraphControls';
 
 import { deckGlStore } from '@/stores/deckGlStore';
 
@@ -41,6 +42,7 @@ export const DeckGlGraph = observer(() => {
           }
         }}
       ></DeckGL>
+      <GraphControls />
     </div>
   );
 });
