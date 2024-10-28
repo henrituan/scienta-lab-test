@@ -32,7 +32,7 @@ const getLayer = (args: {
     id: 'scatter-plot',
     data: points,
     pickable: true,
-    opacity: 0.8,
+    opacity: 0.4,
     stroked: false,
     filled: true,
     radiusMinPixels: 4,
