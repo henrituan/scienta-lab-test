@@ -5,11 +5,12 @@ import { observer } from 'mobx-react-lite';
 import { Patient } from '@/types/patient';
 import { Cluster } from '@/types/cluster';
 
+import { deckGlStore } from '@/stores/deckGlStore';
+
 import { ClusterSidebar } from './cluster-sidebar/ClusterSidebar';
 import { Filters } from './filters/Filters';
 import { ClusterLegends } from './cluster-legends/ClusterLegends';
 import { DeckGlGraph } from './patient-cluster-graph/DeckGlGraph';
-import { deckGlStore } from '@/stores/deckGlStore';
 
 export const Container = observer(
   (props: { patients: Patient[]; clusters: Cluster[] }) => {

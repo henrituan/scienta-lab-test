@@ -5,7 +5,7 @@ import { MapViewState, ScatterplotLayer, WebMercatorViewport } from 'deck.gl';
 import type { Patient } from '@/types/patient';
 import type { Point, DeckGlStore } from '@/stores/deckGlStore.type';
 
-import { getColorForCluster, COLOR_RGB } from '@/stores/util';
+import { COLOR_RGB, rgbToHex } from '@/stores/util';
 
 export const WIDTH = 1000;
 export const HEIGHT = 600;
@@ -100,9 +100,9 @@ function createDeckGlStore() {
         const patientsCount = quadTree
           .data()
           .filter((p) => p.clusterId === selectedClusterId).length;
-        const color = getColorForCluster(selectedClusterId);
+        const color = COLOR_RGB[selectedClusterId];
 
-        return { ...cluster, patientsCount, color };
+        return { ...cluster, patientsCount, color: rgbToHex(color) };
       },
 
       get filteredClusters() {

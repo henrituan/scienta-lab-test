@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 
 import { deckGlStore } from '@/stores/deckGlStore';
-import { getColorForCluster } from '@/stores/util';
+import { COLOR_RGB, rgbToHex } from '@/stores/util';
 
 export const ClusterLegends = observer(() => {
   const {
@@ -29,7 +29,7 @@ export const ClusterLegends = observer(() => {
         >
           <span
             className="h-4 w-4 rounded-full drop-shadow-lg"
-            style={{ backgroundColor: getColorForCluster(clusterId) }}
+            style={{ backgroundColor: rgbToHex(COLOR_RGB[clusterId]) }}
           ></span>
           <span className="text-sm">
             {getPatientsCount(clusterId)} patients
